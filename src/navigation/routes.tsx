@@ -1,6 +1,6 @@
 import type { ComponentType, JSX } from 'react';
 
-import { HomePage } from '@/pages/HomePage/HomePage';
+import HomePage from '@/pages/HomePage/HomePage';
 import ProgressPage from '@/pages/ProgressPage/ProgressPage';
 import AchievementsPage from '@/pages/AchievementsPage/AchievementsPage';
 import CommunityPage from '@/pages/CommunityPage/CommunityPage';
