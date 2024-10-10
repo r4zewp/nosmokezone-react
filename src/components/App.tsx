@@ -1,3 +1,5 @@
+// src/components/App.tsx
+import React, { useEffect, useMemo, useState } from 'react';
 import { useIntegration } from '@telegram-apps/react-router-integration';
 import {
   bindMiniAppCSSVars,
@@ -9,7 +11,6 @@ import {
   useViewport,
 } from '@telegram-apps/sdk-react';
 import { AppRoot } from '@telegram-apps/telegram-ui';
-import { type FC, useEffect, useMemo } from 'react';
 import {
   Navigate,
   Route,
@@ -18,12 +19,28 @@ import {
 } from 'react-router-dom';
 
 import { routes } from '@/navigation/routes.tsx';
+import Onboarding from '@/components/Onboarding/Onboarding';
 
-export const App: FC = () => {
+export const App: React.FC = () => {
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const lp = useLaunchParams();
   const miniApp = useMiniApp();
   const themeParams = useThemeParams();
   const viewport = useViewport();
+
+  useEffect(() => {
+    // Проверка в localStorage, прошел ли пользователь онбординг
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    if (!onboardingCompleted) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    // Установка флага в localStorage, что онбординг пройден
+    localStorage.setItem('onboardingCompleted', 'true');
+    setShowOnboarding(false);
+  };
 
   useEffect(() => {
     return bindMiniAppCSSVars(miniApp, themeParams);
@@ -48,6 +65,10 @@ export const App: FC = () => {
     navigator.attach();
     return () => navigator.detach();
   }, [navigator]);
+
+  if (showOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />;
+  }
 
   return (
     <AppRoot
